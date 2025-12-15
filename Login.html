@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>Iniciar sesión</title>
+		<style>
+			:root{--bg:#f4f7fb;--card:#ffffff;--accent:#2563eb;--danger:#dc2626}
+			*{box-sizing:border-box}
+			body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#e6eefc, var(--bg));font-family:Segoe UI, Roboto, Arial, sans-serif;color:#0f172a}
+			.card{width:100%;max-width:420px;background:var(--card);padding:28px;border-radius:12px;box-shadow:0 6px 24px rgba(15,23,42,0.08)}
+			h1{font-size:1.25rem;margin:0 0 8px}
+			p.lead{margin:0 0 18px;color:#475569}
+			form{display:flex;flex-direction:column;gap:12px}
+			label{font-size:.85rem;color:#334155}
+			input[type="text"],input[type="password"]{width:100%;padding:10px 12px;border:1px solid #e6eefc;border-radius:8px;background:#fbfdff}
+			.actions{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+			button{background:var(--accent);color:white;border:0;padding:10px 14px;border-radius:8px;cursor:pointer}
+			button:disabled{opacity:.6;cursor:not-allowed}
+			.msg{padding:10px;border-radius:8px;font-size:.95rem;display:none}
+			.msg.success{background:#ecfdf5;color:#065f46;border:1px solid #bbf7d0}
+			.msg.error{background:#fff1f2;color:var(--danger);border:1px solid #fecaca}
+			.hint{font-size:.82rem;color:#64748b}
+			.center{display:flex;align-items:center;gap:8px}
+			@media (max-width:480px){.card{margin:16px}}
+		</style>
+	</head>
+	<body>
+		<main class="card" role="main">
+			<h1>Iniciar sesión</h1>
+			<p class="lead">Introduce tu usuario y contraseña para continuar.</p>
+
+			<div id="welcome" style="display:none">
+				<p class="hint">Has iniciado sesión como <strong id="user-name"></strong>.</p>
+				<button id="logoutBtn">Cerrar sesión</button>
+			</div>
+
+			<form id="loginForm" aria-labelledby="loginTitle">
+				<div>
+					<label for="username">Usuario</label>
+					<input id="username" name="username" type="text" autocomplete="username" required placeholder="ej. admin" />
+				</div>
+				<div>
+					<label for="password">Contraseña</label>
+					<input id="password" name="password" type="password" autocomplete="current-password" required placeholder="tu contraseña" />
+				</div>
+
+				<div class="actions">
+					<span class="hint">Credenciales de ejemplo: <strong>admin / 1234</strong></span>
+					<button id="submitBtn" type="submit">Entrar</button>
+				</div>
+			</form>
+
+			<div id="message" class="msg" role="status" aria-live="polite"></div>
+		</main>
+
+		<script>
+			// Credenciales de ejemplo — sólo client-side para demo local
+			const VALID = { username: 'admin', password: '1234' };
+
+			const form = document.getElementById('loginForm');
+			const msg = document.getElementById('message');
+			const submitBtn = document.getElementById('submitBtn');
+			const welcome = document.getElementById('welcome');
+			const userNameEl = document.getElementById('user-name');
+			const logoutBtn = document.getElementById('logoutBtn');
+
+			function showMessage(text, type){
+				msg.textContent = text;
+				msg.className = 'msg ' + (type === 'success' ? 'success' : 'error');
+				msg.style.display = 'block';
+			}
+
+			function hideMessage(){
+				msg.style.display = 'none';
+			}
+
+			function setLoggedIn(user){
+				form.style.display = 'none';
+				welcome.style.display = 'block';
+				userNameEl.textContent = user;
+			}
+
+			function setLoggedOut(){
+				form.style.display = '';
+				welcome.style.display = 'none';
+				userNameEl.textContent = '';
+				hideMessage();
+			}
+
+			// Mantener estado simple en sessionStorage (opcional)
+			if (sessionStorage.getItem('loggedUser')){
+				setLoggedIn(sessionStorage.getItem('loggedUser'));
+			}
+
+			form.addEventListener('submit', function(e){
+				e.preventDefault();
+				hideMessage();
+				submitBtn.disabled = true;
+				const user = document.getElementById('username').value.trim();
+				const pass = document.getElementById('password').value;
+
+				// Validaciones simples
+				if (!user || !pass){
+					showMessage('Por favor completa usuario y contraseña.', 'error');
+					submitBtn.disabled = false;
+					return;
+				}
+
+				// Simular verificación
+				setTimeout(() => {
+					if (user === VALID.username && pass === VALID.password){
+						showMessage('Inicio de sesión correcto. Bienvenido ' + user + '!', 'success');
+						sessionStorage.setItem('loggedUser', user);
+						setLoggedIn(user);
+					} else {
+						showMessage('Usuario o contraseña incorrectos.', 'error');
+						submitBtn.disabled = false;
+					}
+				}, 500); // pequeña latencia para simular comprobación
+			});
+
+			logoutBtn.addEventListener('click', function(){
+				sessionStorage.removeItem('loggedUser');
+				setLoggedOut();
+				submitBtn.disabled = false;
+			});
+		</script>
+	</body>
+</html>
+
