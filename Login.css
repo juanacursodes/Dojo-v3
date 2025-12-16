@@ -1,6 +1,5 @@
-
-body { 
-    front-family: Arial, sans-serif;
+body {
+    font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     text-align: center;
     padding: 50px;
@@ -10,16 +9,17 @@ form {
     background: #fff;
     padding: 20px;
     border-radius: 8px;
-    width: 300px;
+    width: 320px;
     margin: auto;
-    box-shadow: 0 0 10px rgba(0,0,0,0,1);
-
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
+
 input, button {
     width: 90%;
     margin: 10px auto;
-    padding:10px;
+    padding: 10px;
     font-size: 16px;
+    display: block;
 }
 
 button {
@@ -33,3 +33,8 @@ button {
 button:hover {
     background-color: #004999;
 }
+
+/* Mensajes */
+.msg { display: none; margin-top: 12px; font-size: 0.95rem; }
+.msg.error { display: block; color: #b91c1c; background: #fff1f2; border: 1px solid #fecaca; padding: 8px; border-radius: 6px; }
+.msg.success { display: block; color: #065f46; background: #ecfdf5; border: 1px solid #bbf7d0; padding: 8px; border-radius: 6px; }
